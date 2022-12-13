@@ -30,18 +30,20 @@ public class BillingTest {
 		ObjectMapper mapper = new ObjectMapper();
 		String loginJson = mapper.writeValueAsString(loginrequset);
 		// System.out.println(loginJson);
-		baseURI = "http://localhost:8086/api/authenticate";
+		baseURI = "http://10.0.61.24:8086/api/authenticate";
 		Response response = given().header("Content-Type", "application/json").when().body(loginJson).post();
 		token = response.jsonPath().get("id_token");
 
 	}
 
-	@Test(priority = 2)
+	@Test(dependsOnMethods = { "loginToBilling" })
 	public void getAllCustomers() {
-		baseURI = "http://localhost:8086/api/dashboard/";
-		given().auth().oauth2(token).when().get("/customers").then().assertThat().body("[0].value", equalTo(223)).log()
+		baseURI = "http://10.0.61.24:8086/api/dashboard/";
+		given().auth().oauth2(token).when().get("/customers").then().assertThat().body("[0].value", equalTo(227)).log()
 				.all();
 
 	}
+	
+
 
 }
